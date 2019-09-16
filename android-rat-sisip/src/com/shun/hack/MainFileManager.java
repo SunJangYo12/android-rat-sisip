@@ -192,15 +192,14 @@ public class MainFileManager extends Activity implements AdapterView.OnItemClick
                 subheader.append(arr[3]).append(' ').append(arr[4]);//date folder
                 listFolder.add(new Item(android.R.drawable.ic_menu_preferences, names[j], subheader.toString(), 1));
             } else {//если файл
-               /* diandroid 5 keatas force close
-               /* subheader.append(arr[4]).append(' ').append(arr[5]);//date file
-                subheader.append("         ").append(calcSize(Long.parseLong(arr[3])));
+               // subheader.append(arr[4]).append(' ').append(arr[5]);//date file
+                //subheader.append("         ").append(calcSize(Long.parseLong(arr[3])));
                 String ext = getExtension(names[j]);// get extension from name
                 int iconId = android.R.drawable.ic_menu_help;
                 if (mapExt.containsKey(ext)) {
                     iconId = mapExt.get(ext);
                 }
-                listFile.add(new Item(iconId, names[j], subheader.toString(), 2));*/
+                listFile.add(new Item(android.R.drawable.ic_menu_help, names[j], subheader.toString(), 2));
             }
             j++;
         }
