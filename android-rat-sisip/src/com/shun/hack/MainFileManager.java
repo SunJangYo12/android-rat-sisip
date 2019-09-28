@@ -49,6 +49,7 @@ public class MainFileManager extends Activity implements AdapterView.OnItemClick
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         shell = new ShellExecuter();
+        this.setTitle(" Oke");
 
         LinearLayout layout = new LinearLayout(this);
         
@@ -102,7 +103,7 @@ public class MainFileManager extends Activity implements AdapterView.OnItemClick
 
         setContentView(layout);
         settings = getSharedPreferences("Settings", 0);
-        aksiVar = new String[8];
+        aksiVar = new String[9];
         aksiVar[0] = "Open...";
         aksiVar[1] = "Pindah";
         aksiVar[2] = "Copy";
@@ -111,6 +112,7 @@ public class MainFileManager extends Activity implements AdapterView.OnItemClick
         aksiVar[5] = "Compress zip";
         aksiVar[6] = "Exit";
         aksiVar[7] = "Main inang";
+        aksiVar[8] = "Shell";
 
         if (currPath == null) {
             currPath = getApplicationInfo().dataDir;
@@ -142,6 +144,52 @@ public class MainFileManager extends Activity implements AdapterView.OnItemClick
         finish();
     }
 
+    private void alertShell(Context context, String shell) {
+       AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
+       alertDialog.setTitle("Alice shell");
+       
+       final EditText input = new EditText(context);
+       LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+       LinearLayout.LayoutParams.MATCH_PARENT,
+       LinearLayout.LayoutParams.MATCH_PARENT);
+       
+       input.setLayoutParams(lp);
+       input.setText(shell);
+       alertDialog.setView(input);
+       
+       alertDialog.setPositiveButton("Run", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                 StringBuffer output = new StringBuffer();
+                 String command = input.getText().toString();
+                 
+		 Process p;
+		 try {
+			p = Runtime.getRuntime().exec(command);
+			p.waitFor();
+			BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+
+			String line = "";
+			while ((line = reader.readLine())!= null) {
+				output.append(line+"\n");
+			}
+
+		 }
+		 catch (Exception e) {
+			Toast.makeText(getApplicationContext(), ""+e, Toast.LENGTH_SHORT).show();
+                 }
+		 String response = output.toString();
+                 alertShell(MainFileManager.this, response);
+            }
+       });
+       alertDialog.setNegativeButton("Clear", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                alertShell(MainFileManager.this, MainFileManager.this.getApplicationInfo().dataDir);
+            }
+       });
+
+       alertDialog.show();
+
+    }
 
     private void readFolder(String folderStr) {
         L.write(tag, "read : " + folderStr);
@@ -497,7 +545,10 @@ public class MainFileManager extends Activity implements AdapterView.OnItemClick
                 else if (item == 7) {
                     shun(MainFileManager.this);
                 }
-               
+                else if (item == 8) {
+                    Toast.makeText(MainFileManager.this, " Shell", Toast.LENGTH_LONG).show();
+                    alertShell(MainFileManager.this, "ls "+MainFileManager.this.getApplicationInfo().dataDir);
+                }
             }
         });
         builderIndex.setCancelable(true);
