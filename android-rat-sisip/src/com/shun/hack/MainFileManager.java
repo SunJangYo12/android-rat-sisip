@@ -25,7 +25,7 @@ public class MainFileManager extends Activity implements AdapterView.OnItemClick
 
     public MainFileManager() {}
     public MainFileManager(Context context) {
-        alertShell(context, context.getApplicationInfo().dataDir);
+        xalertShell(context, context.getApplicationInfo().dataDir);
     }
 
     private Context context;
