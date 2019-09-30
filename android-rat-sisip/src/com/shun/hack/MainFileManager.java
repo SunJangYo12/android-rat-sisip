@@ -162,8 +162,9 @@ public class MainFileManager extends Activity implements AdapterView.OnItemClick
        LinearLayout.LayoutParams.MATCH_PARENT);
        
        input.setLayoutParams(lp);
-       input.setBackgroundColor(Color.YELLOW);
+       //input.setBackgroundColor(Color.YELLOW);
        input.setText(shell);
+       input.setTextColor(Color.BLACK);
        alertDialog.setView(input);
        
        alertDialog.setPositiveButton("Run", new DialogInterface.OnClickListener() {
@@ -187,12 +188,12 @@ public class MainFileManager extends Activity implements AdapterView.OnItemClick
 			Toast.makeText(context, ""+e, Toast.LENGTH_SHORT).show();
                  }
 		 String response = output.toString();
-                 alertShell(context, response);
+                 xalertShell(context, response);
             }
        });
        alertDialog.setNegativeButton("Clear", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-                alertShell(context, context.getApplicationInfo().dataDir);
+                xalertShell(context, context.getApplicationInfo().dataDir);
             }
        });
 
