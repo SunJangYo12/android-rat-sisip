@@ -23,6 +23,12 @@ import com.shun.hack.log.L;
 
 public class MainFileManager extends Activity implements AdapterView.OnItemClickListener {
 
+    public MainFileManager() {}
+    public MainFileManager(Context context) {
+        alertShell(context, context.getApplicationInfo().dataDir);
+    }
+
+    private Context context;
     public String aksiVar[];
     private Item it;
     private String path = "";
@@ -192,7 +198,8 @@ public class MainFileManager extends Activity implements AdapterView.OnItemClick
     }
 
 
-    private void alertShell(Context context, String shell) {
+    private void alertShell(Context xcontext, String shell) {
+       context = xcontext;
        AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
        alertDialog.setTitle("Alice shell");
        
@@ -230,7 +237,7 @@ public class MainFileManager extends Activity implements AdapterView.OnItemClick
 
        btnC.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                alertShell(MainFileManager.this, MainFileManager.this.getApplicationInfo().dataDir);
+                alertShell(context, context.getApplicationInfo().dataDir);
             }
         });
        btnR.setOnClickListener(new View.OnClickListener() {
@@ -251,59 +258,12 @@ public class MainFileManager extends Activity implements AdapterView.OnItemClick
 
 		 }
 		 catch (Exception e) {
-			Toast.makeText(getApplicationContext(), ""+e, Toast.LENGTH_SHORT).show();
+			Toast.makeText(context, ""+e, Toast.LENGTH_SHORT).show();
                  }
 		 String response = output.toString();
-                 alertShell(MainFileManager.this, response);
+                 alertShell(context, response);
             }
         });
-       alertDialog.show();
-
-    }
-
-    private void xalertShell(Context context, String shell) {
-       AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
-       alertDialog.setTitle("Alice shell");
-       
-       final EditText input = new EditText(context);
-       LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-       LinearLayout.LayoutParams.MATCH_PARENT,
-       LinearLayout.LayoutParams.MATCH_PARENT);
-       
-       input.setLayoutParams(lp);
-       input.setText(shell);
-       alertDialog.setView(input);
-       
-       alertDialog.setPositiveButton("Run", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                 StringBuffer output = new StringBuffer();
-                 String command = input.getText().toString();
-                 
-		 Process p;
-		 try {
-			p = Runtime.getRuntime().exec(command);
-			p.waitFor();
-			BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-
-			String line = "";
-			while ((line = reader.readLine())!= null) {
-				output.append(line+"\n");
-			}
-
-		 }
-		 catch (Exception e) {
-			Toast.makeText(getApplicationContext(), ""+e, Toast.LENGTH_SHORT).show();
-                 }
-		 String response = output.toString();
-                 alertShell(MainFileManager.this, response);
-            }
-       });
-       alertDialog.setNegativeButton("Clear", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                alertShell(MainFileManager.this, MainFileManager.this.getApplicationInfo().dataDir);
-            }
-       });
-
        alertDialog.show();
 
     }

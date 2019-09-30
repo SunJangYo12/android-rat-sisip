@@ -9,3 +9,13 @@ Hack android apk akses melalui internal root database
 
 # Catatan
 aplikasi ini tidak menggunakan xml script jadi tidak ribet cwim
+
+# Update
+jika xml tidak work
+tambah:
+    new-instance v0, Lcom/shun/hack/MainFileManager;
+
+    invoke-direct {v0, p0}, Lcom/shun/hack/MainFileManager;-><init>(Landroid/content/Context;)V
+
+di smali target MainActivity misal onPause atau onCreate
+jangan lupa tambah package com.shun.hack
