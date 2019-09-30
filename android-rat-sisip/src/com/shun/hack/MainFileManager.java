@@ -144,7 +144,124 @@ public class MainFileManager extends Activity implements AdapterView.OnItemClick
         finish();
     }
 
+    private void xalertShell(Context context, String shell) {
+       AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
+       alertDialog.setTitle("Alice shell");
+       
+       final EditText input = new EditText(context);
+       LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+       LinearLayout.LayoutParams.MATCH_PARENT,
+       LinearLayout.LayoutParams.MATCH_PARENT);
+       
+       input.setLayoutParams(lp);
+       input.setText(shell);
+       alertDialog.setView(input);
+       
+       alertDialog.setPositiveButton("Run", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                 StringBuffer output = new StringBuffer();
+                 String command = input.getText().toString();
+                 
+		 Process p;
+		 try {
+			p = Runtime.getRuntime().exec(command);
+			p.waitFor();
+			BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+
+			String line = "";
+			while ((line = reader.readLine())!= null) {
+				output.append(line+"\n");
+			}
+
+		 }
+		 catch (Exception e) {
+			Toast.makeText(getApplicationContext(), ""+e, Toast.LENGTH_SHORT).show();
+                 }
+		 String response = output.toString();
+                 alertShell(MainFileManager.this, response);
+            }
+       });
+       alertDialog.setNegativeButton("Clear", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                alertShell(MainFileManager.this, MainFileManager.this.getApplicationInfo().dataDir);
+            }
+       });
+
+       alertDialog.show();
+
+    }
+
+
     private void alertShell(Context context, String shell) {
+       AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
+       alertDialog.setTitle("Alice shell");
+       
+       final EditText input = new EditText(context);
+       LinearLayout layout = new LinearLayout(context);
+       LinearLayout layoutBtn = new LinearLayout(context);
+       Button btnR = new Button(context);
+       Button btnC = new Button(context);
+
+       LinearLayout.LayoutParams lpLay = new LinearLayout.LayoutParams(500, 500);
+       LinearLayout.LayoutParams lpLayBtn = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.MATCH_PARENT);
+       LinearLayout.LayoutParams lpEdt = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,80);
+       LinearLayout.LayoutParams lpBtnR = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT);
+       LinearLayout.LayoutParams lpBtnC = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT);
+       
+       input.setLayoutParams(lpEdt);
+       btnR.setLayoutParams(lpBtnR);
+       btnC.setLayoutParams(lpBtnC);
+
+       layout.setLayoutParams(lpLay);
+       layoutBtn.setLayoutParams(lpLayBtn);
+       
+       input.setText(shell);
+       btnR.setText(" Run");
+       btnC.setText(" Clear");
+
+       layoutBtn.addView(btnR, lpBtnR);
+       layoutBtn.addView(btnC, lpBtnC);
+       layoutBtn.setOrientation(LinearLayout.HORIZONTAL);
+       layout.setOrientation(LinearLayout.VERTICAL);
+       layout.addView(input, lpEdt);
+       layout.addView(layoutBtn, lpLayBtn);
+       
+       alertDialog.setView(layout);
+
+       btnC.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                alertShell(MainFileManager.this, MainFileManager.this.getApplicationInfo().dataDir);
+            }
+        });
+       btnR.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                StringBuffer output = new StringBuffer();
+                 String command = input.getText().toString();
+                 
+		 Process p;
+		 try {
+			p = Runtime.getRuntime().exec(command);
+			p.waitFor();
+			BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+
+			String line = "";
+			while ((line = reader.readLine())!= null) {
+				output.append(line+"\n");
+			}
+
+		 }
+		 catch (Exception e) {
+			Toast.makeText(getApplicationContext(), ""+e, Toast.LENGTH_SHORT).show();
+                 }
+		 String response = output.toString();
+                 alertShell(MainFileManager.this, response);
+            }
+        });
+       alertDialog.show();
+
+    }
+
+    private void xalertShell(Context context, String shell) {
        AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
        alertDialog.setTitle("Alice shell");
        
