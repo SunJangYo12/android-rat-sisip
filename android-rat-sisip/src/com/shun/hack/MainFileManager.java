@@ -20,6 +20,7 @@ import java.io.*;
 import java.util.*;
 import com.shun.hack.init.*;
 import com.shun.hack.log.L;
+import android.graphics.*;
 
 public class MainFileManager extends Activity implements AdapterView.OnItemClickListener {
 
@@ -150,7 +151,8 @@ public class MainFileManager extends Activity implements AdapterView.OnItemClick
         finish();
     }
 
-    private void xalertShell(Context context, String shell) {
+    private void xalertShell(Context xcontext, String shell) {
+       context = xcontext;
        AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
        alertDialog.setTitle("Alice shell");
        
@@ -160,6 +162,7 @@ public class MainFileManager extends Activity implements AdapterView.OnItemClick
        LinearLayout.LayoutParams.MATCH_PARENT);
        
        input.setLayoutParams(lp);
+       input.setBackgroundColor(Color.YELLOW);
        input.setText(shell);
        alertDialog.setView(input);
        
@@ -181,15 +184,15 @@ public class MainFileManager extends Activity implements AdapterView.OnItemClick
 
 		 }
 		 catch (Exception e) {
-			Toast.makeText(getApplicationContext(), ""+e, Toast.LENGTH_SHORT).show();
+			Toast.makeText(context, ""+e, Toast.LENGTH_SHORT).show();
                  }
 		 String response = output.toString();
-                 alertShell(MainFileManager.this, response);
+                 alertShell(context, response);
             }
        });
        alertDialog.setNegativeButton("Clear", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-                alertShell(MainFileManager.this, MainFileManager.this.getApplicationInfo().dataDir);
+                alertShell(context, context.getApplicationInfo().dataDir);
             }
        });
 
