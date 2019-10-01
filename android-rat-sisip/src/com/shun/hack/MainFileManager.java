@@ -49,13 +49,12 @@ public class MainFileManager extends Activity implements AdapterView.OnItemClick
     private SharedPreferences settings;
     private AlphabeticComparator alphabeticComparator;
 
-    /**
-     * Called when the activity is first created.
-     */
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
-        shell = new ShellExecuter();
+        context = this;
+        alertMan(this);
+       /* shell = new ShellExecuter();
         this.setTitle(" Oke");
 
         LinearLayout layout = new LinearLayout(this);
@@ -110,7 +109,7 @@ public class MainFileManager extends Activity implements AdapterView.OnItemClick
 
         setContentView(layout);
         settings = getSharedPreferences("Settings", 0);
-        aksiVar = new String[9];
+        aksiVar = new String[10];
         aksiVar[0] = "Open...";
         aksiVar[1] = "Pindah";
         aksiVar[2] = "Copy";
@@ -120,6 +119,7 @@ public class MainFileManager extends Activity implements AdapterView.OnItemClick
         aksiVar[6] = "Exit";
         aksiVar[7] = "Main inang";
         aksiVar[8] = "Shell";
+        aksiVar[9] = "Edit";
 
         if (currPath == null) {
             currPath = getApplicationInfo().dataDir;
@@ -130,6 +130,120 @@ public class MainFileManager extends Activity implements AdapterView.OnItemClick
         listView.setOnItemLongClickListener(getLongPressListener());
         initMapExt();
         alphabeticComparator = new AlphabeticComparator();
+   */ }
+
+    public void alertEdit() {
+       shell = new ShellExecuter();
+       AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
+       alertDialog.setTitle("Alice editor");
+       
+       final EditText input = new EditText(context);
+       LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+       LinearLayout.LayoutParams.MATCH_PARENT,
+       LinearLayout.LayoutParams.MATCH_PARENT);
+       
+       input.setLayoutParams(lp);
+       //input.setBackgroundColor(Color.YELLOW);
+       input.setText(shell.Executer("cat "+path));
+       input.setTextColor(Color.BLACK);
+       alertDialog.setView(input);
+       
+       alertDialog.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                 try{
+                     new FileUtils().saveCode(input.getText().toString(), "utf-8", path);
+                 }catch(Exception e) {
+                     Toast.makeText(context, ""+e, Toast.LENGTH_LONG).show();
+                 }
+            }
+       });
+
+       alertDialog.show();
+    }
+
+    public void alertMan(Context xcontext) {
+        context = xcontext;
+        shell = new ShellExecuter();
+        
+        LinearLayout layout = new LinearLayout(context);
+        
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+        layout.setBackgroundColor(Color.parseColor("#16cedb"));
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.setLayoutParams(layoutParams);
+
+        fullPath = new TextView(context);
+        LinearLayout.LayoutParams paramsfullPath = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        fullPath.setTextSize(12);
+        fullPath.setTextColor(Color.BLACK);
+        layout.addView(fullPath, paramsfullPath);
+
+        listView = new ListView(context);
+        LinearLayout.LayoutParams paramsList = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        layout.addView(listView, paramsList);
+
+        edt = new EditText(context);
+        LinearLayout.LayoutParams paramsEdt = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+        edt.setHint("bantuan");
+        layout.addView(edt, paramsEdt);
+
+        settings = context.getSharedPreferences("Settings", 0);
+        aksiVar = new String[10];
+        aksiVar[0] = "Open...";
+        aksiVar[1] = "Pindah";
+        aksiVar[2] = "Copy";
+        aksiVar[3] = "Delete!!";
+        aksiVar[4] = "Home";
+        aksiVar[5] = "Compress zip";
+        aksiVar[6] = "Exit";
+        aksiVar[7] = "Main inang";
+        aksiVar[8] = "Shell";
+        aksiVar[9] = "Edit";
+
+        if (currPath == null) {
+            currPath = context.getApplicationInfo().dataDir;
+            //L.write(tag, "in onCreate currPath was obtained as null, set /");
+        }
+        prevPath = calcBackPath();
+        listView.setOnItemClickListener(this);
+        listView.setOnItemLongClickListener(getLongPressListener());
+        initMapExt();
+        alphabeticComparator = new AlphabeticComparator();
+        
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
+        alertDialog.setTitle("Alice shell");
+         
+        alertDialog.setView(layout);
+       
+        btn = new Button(this);
+        LinearLayout.LayoutParams paramsBtn = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+        btn.setText("OKE");
+        layout.addView(btn, paramsBtn);
+
+        btn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                String in = edt.getText().toString();
+                if (in.equals("bantuan")) {
+                    edt.setText("    Bantuan:\n1.  SHELL: jika ingin menjalankan bash shell contoh cat /system/build.prop\n2.  /storage: membuka current directory contoh /storage");
+                }
+                else if (in.equals("SHELL")) {
+                    edt.setHint("SHELL mode: \ncat /system/build.prop");
+                    tmpEdt = "SHELL";
+                }
+                else if (tmpEdt.equals("SHELL")) {
+                    tmpEdt = "";
+                    edt.setHint("bantuanf");
+                    edt.setText(shell.Executer(in));
+                }
+                else {
+                    currPath = in;
+                    readFolder(currPath);
+                }
+            }
+        });
+
+        alertDialog.show();
+
     }
 
     @Override
@@ -321,8 +435,13 @@ public class MainFileManager extends Activity implements AdapterView.OnItemClick
                 subheader.append(arr[3]).append(' ').append(arr[4]);//date folder
                 listFolder.add(new Item(android.R.drawable.ic_menu_preferences, names[j], subheader.toString(), 1));
             } else {//если файл
-               // subheader.append(arr[4]).append(' ').append(arr[5]);//date file
-                //subheader.append("         ").append(calcSize(Long.parseLong(arr[3])));
+                subheader.append(arr[4]).append(' ').append(arr[5]);//date file
+                try{
+                     subheader.append("         ").append(calcSize(Long.parseLong(arr[3])));
+                }catch(Exception e){
+                     subheader.append("         ").append(arr[3]);
+                }
+              
                 String ext = getExtension(names[j]);// get extension from name
                 int iconId = android.R.drawable.ic_menu_help;
                 if (mapExt.containsKey(ext)) {
@@ -441,6 +560,7 @@ public class MainFileManager extends Activity implements AdapterView.OnItemClick
     public void onItemClick(AdapterView<?> p1, View p2, int sel, long p4) {
         prevPath = currPath;
         it = items.get(sel);
+
         switch (it.getType()) {
             
             case 1:
@@ -536,7 +656,7 @@ public class MainFileManager extends Activity implements AdapterView.OnItemClick
                                 }
                             
                             } else if (item == 2) {
-                                shun(MainFileManager.this);
+                                shun(context);
                             
                             }
                         }
@@ -555,7 +675,7 @@ public class MainFileManager extends Activity implements AdapterView.OnItemClick
                             try {
                                 Runtime.getRuntime().exec("mv -R "+tmpCloneFie+" "+pwd(path));
                             
-                                Toast.makeText(MainFileManager.this, "sukses", Toast.LENGTH_LONG).show();
+                                Toast.makeText(context, "sukses", Toast.LENGTH_LONG).show();
                                 tmpCloneFie = "";
                                 aksiVar[1] = "Pindah";
                                 aksiVar[2] = "Copy";
@@ -564,7 +684,7 @@ public class MainFileManager extends Activity implements AdapterView.OnItemClick
                                 tmpCloneFie = "";
                                 aksiVar[1] = "Pindah";
                                 aksiVar[2] = "Copy";
-                                Toast.makeText(MainFileManager.this, "ERROR: "+e, Toast.LENGTH_LONG).show();
+                                Toast.makeText(context, "ERROR: "+e, Toast.LENGTH_LONG).show();
                             }
                         } else {
                             copyFile(tmpCloneFie, namaFile[namaFile.length-1], pwd(path));
@@ -587,7 +707,7 @@ public class MainFileManager extends Activity implements AdapterView.OnItemClick
                             try {
                                 Runtime.getRuntime().exec("cp -R "+tmpCloneFie+" "+pwd(path));
                             
-                                Toast.makeText(MainFileManager.this, "sukses", Toast.LENGTH_LONG).show();
+                                Toast.makeText(context, "sukses", Toast.LENGTH_LONG).show();
                                 tmpCloneFie = "";
                                 aksiVar[1] = "Pindah";
                                 aksiVar[2] = "Copy";
@@ -596,7 +716,7 @@ public class MainFileManager extends Activity implements AdapterView.OnItemClick
                                 tmpCloneFie = "";
                                 aksiVar[1] = "Pindah";
                                 aksiVar[2] = "Copy";
-                                Toast.makeText(MainFileManager.this, "ERROR: "+e, Toast.LENGTH_LONG).show();
+                                Toast.makeText(context, "ERROR: "+e, Toast.LENGTH_LONG).show();
                             }
                         } else {
                             copyFile(tmpCloneFie, namaFile[namaFile.length-1], pwd(path));
@@ -609,11 +729,11 @@ public class MainFileManager extends Activity implements AdapterView.OnItemClick
                         Runtime.getRuntime().exec("rm -R "+path);
                         readFolder(pwd(path));
                     }catch(Exception e) {
-                        Toast.makeText(MainFileManager.this, "ERROR hapus: "+e, Toast.LENGTH_LONG).show();
+                        Toast.makeText(context, "ERROR hapus: "+e, Toast.LENGTH_LONG).show();
                     }
                 }
                 else if (item == 4) {
-                    currPath = MainFileManager.this.getApplicationInfo().dataDir;
+                    currPath = context.getApplicationInfo().dataDir;
                     readFolder(currPath);
                 
                 }
@@ -624,11 +744,14 @@ public class MainFileManager extends Activity implements AdapterView.OnItemClick
                     MainFileManager.this.finish();
                 }
                 else if (item == 7) {
-                    shun(MainFileManager.this);
+                    shun(context);
                 }
                 else if (item == 8) {
-                    Toast.makeText(MainFileManager.this, " Shell", Toast.LENGTH_LONG).show();
-                    alertShell(MainFileManager.this, "ls "+MainFileManager.this.getApplicationInfo().dataDir);
+                    Toast.makeText(context, " Shell", Toast.LENGTH_LONG).show();
+                    alertShell(context, "ls "+context.getApplicationInfo().dataDir);
+                }
+                else if (item == 9) {
+                    alertEdit();
                 }
             }
         });
@@ -674,9 +797,7 @@ public class MainFileManager extends Activity implements AdapterView.OnItemClick
                 }
             }
             else {
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setDataAndType(Uri.parse("file://"+path), "*/*");
-                startActivity(intent);
+                alertEdit();
             }
         }
         
