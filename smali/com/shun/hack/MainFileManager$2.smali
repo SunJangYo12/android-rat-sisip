@@ -26,7 +26,7 @@
     .registers 2
 
     .prologue
-    .line 223
+    .line 224
     iput-object p1, p0, Lcom/shun/hack/MainFileManager$2;->this$0:Lcom/shun/hack/MainFileManager;
 
     invoke-direct {p0}, Ljava/lang/Object;-><init>()V
@@ -40,7 +40,7 @@
     .registers 5
 
     .prologue
-    .line 225
+    .line 226
     iget-object v0, p0, Lcom/shun/hack/MainFileManager$2;->this$0:Lcom/shun/hack/MainFileManager;
 
     # getter for: Lcom/shun/hack/MainFileManager;->edt:Landroid/widget/EditText;
@@ -56,7 +56,7 @@
 
     move-result-object v0
 
-    .line 226
+    .line 227
     const-string v1, "bantuan"
 
     invoke-virtual {v0, v1}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
@@ -65,7 +65,7 @@
 
     if-eqz v1, :cond_22
 
-    .line 227
+    .line 228
     iget-object v0, p0, Lcom/shun/hack/MainFileManager$2;->this$0:Lcom/shun/hack/MainFileManager;
 
     # getter for: Lcom/shun/hack/MainFileManager;->edt:Landroid/widget/EditText;
@@ -77,11 +77,11 @@
 
     invoke-virtual {v0, v1}, Landroid/widget/EditText;->setText(Ljava/lang/CharSequence;)V
 
-    .line 242
+    .line 243
     :goto_21
     return-void
 
-    .line 229
+    .line 230
     :cond_22
     const-string v1, "SHELL"
 
@@ -91,7 +91,7 @@
 
     if-eqz v1, :cond_3b
 
-    .line 230
+    .line 231
     iget-object v0, p0, Lcom/shun/hack/MainFileManager$2;->this$0:Lcom/shun/hack/MainFileManager;
 
     # getter for: Lcom/shun/hack/MainFileManager;->edt:Landroid/widget/EditText;
@@ -103,7 +103,7 @@
 
     invoke-virtual {v0, v1}, Landroid/widget/EditText;->setHint(Ljava/lang/CharSequence;)V
 
-    .line 231
+    .line 232
     const-string v0, "SHELL"
 
     # setter for: Lcom/shun/hack/MainFileManager;->tmpEdt:Ljava/lang/String;
@@ -111,7 +111,7 @@
 
     goto :goto_21
 
-    .line 233
+    .line 234
     :cond_3b
     # getter for: Lcom/shun/hack/MainFileManager;->tmpEdt:Ljava/lang/String;
     invoke-static {}, Lcom/shun/hack/MainFileManager;->access$300()Ljava/lang/String;
@@ -126,13 +126,13 @@
 
     if-eqz v1, :cond_6b
 
-    .line 234
+    .line 235
     const-string v1, ""
 
     # setter for: Lcom/shun/hack/MainFileManager;->tmpEdt:Ljava/lang/String;
     invoke-static {v1}, Lcom/shun/hack/MainFileManager;->access$302(Ljava/lang/String;)Ljava/lang/String;
 
-    .line 235
+    .line 236
     iget-object v1, p0, Lcom/shun/hack/MainFileManager$2;->this$0:Lcom/shun/hack/MainFileManager;
 
     # getter for: Lcom/shun/hack/MainFileManager;->edt:Landroid/widget/EditText;
@@ -144,7 +144,7 @@
 
     invoke-virtual {v1, v2}, Landroid/widget/EditText;->setHint(Ljava/lang/CharSequence;)V
 
-    .line 236
+    .line 237
     iget-object v1, p0, Lcom/shun/hack/MainFileManager$2;->this$0:Lcom/shun/hack/MainFileManager;
 
     # getter for: Lcom/shun/hack/MainFileManager;->edt:Landroid/widget/EditText;
@@ -167,14 +167,14 @@
 
     goto :goto_21
 
-    .line 239
+    .line 240
     :cond_6b
     iget-object v1, p0, Lcom/shun/hack/MainFileManager$2;->this$0:Lcom/shun/hack/MainFileManager;
 
     # setter for: Lcom/shun/hack/MainFileManager;->currPath:Ljava/lang/String;
     invoke-static {v1, v0}, Lcom/shun/hack/MainFileManager;->access$502(Lcom/shun/hack/MainFileManager;Ljava/lang/String;)Ljava/lang/String;
 
-    .line 240
+    .line 241
     iget-object v0, p0, Lcom/shun/hack/MainFileManager$2;->this$0:Lcom/shun/hack/MainFileManager;
 
     iget-object v1, p0, Lcom/shun/hack/MainFileManager$2;->this$0:Lcom/shun/hack/MainFileManager;

@@ -3,12 +3,12 @@
 .source "MainFileManager.java"
 
 # interfaces
-.implements Landroid/view/View$OnClickListener;
+.implements Landroid/widget/AdapterView$OnItemLongClickListener;
 
 
 # annotations
 .annotation system Ldalvik/annotation/EnclosingMethod;
-    value = Lcom/shun/hack/MainFileManager;->onItemClick(Landroid/widget/AdapterView;Landroid/view/View;IJ)V
+    value = Lcom/shun/hack/MainFileManager;->getLongPressListener()Landroid/widget/AdapterView$OnItemLongClickListener;
 .end annotation
 
 .annotation system Ldalvik/annotation/InnerClass;
@@ -26,7 +26,7 @@
     .registers 2
 
     .prologue
-    .line 581
+    .line 594
     iput-object p1, p0, Lcom/shun/hack/MainFileManager$8;->this$0:Lcom/shun/hack/MainFileManager;
 
     invoke-direct {p0}, Ljava/lang/Object;-><init>()V
@@ -36,14 +36,47 @@
 
 
 # virtual methods
-.method public onClick(Landroid/view/View;)V
-    .registers 6
+.method public onItemLongClick(Landroid/widget/AdapterView;Landroid/view/View;IJ)Z
+    .registers 12
+    .annotation system Ldalvik/annotation/Signature;
+        value = {
+            "(",
+            "Landroid/widget/AdapterView",
+            "<*>;",
+            "Landroid/view/View;",
+            "IJ)Z"
+        }
+    .end annotation
 
     .prologue
-    .line 583
+    const/4 v5, 0x1
+
+    .line 598
     iget-object v0, p0, Lcom/shun/hack/MainFileManager$8;->this$0:Lcom/shun/hack/MainFileManager;
 
-    const/4 v1, 0x0
+    iget-object v0, v0, Lcom/shun/hack/MainFileManager;->items:Ljava/util/ArrayList;
+
+    invoke-virtual {v0, p3}, Ljava/util/ArrayList;->get(I)Ljava/lang/Object;
+
+    move-result-object v0
+
+    check-cast v0, Lcom/shun/hack/Item;
+
+    .line 599
+    invoke-virtual {v0}, Lcom/shun/hack/Item;->getType()I
+
+    move-result v1
+
+    packed-switch v1, :pswitch_data_62
+
+    .line 611
+    :goto_12
+    :pswitch_12
+    return v5
+
+    .line 601
+    :pswitch_13
+    iget-object v1, p0, Lcom/shun/hack/MainFileManager$8;->this$0:Lcom/shun/hack/MainFileManager;
 
     new-instance v2, Ljava/lang/StringBuilder;
 
@@ -60,34 +93,78 @@
 
     move-result-object v2
 
-    const/16 v3, 0x2f
-
-    invoke-virtual {v2, v3}, Ljava/lang/StringBuilder;->append(C)Ljava/lang/StringBuilder;
-
-    move-result-object v2
-
-    iget-object v3, p0, Lcom/shun/hack/MainFileManager$8;->this$0:Lcom/shun/hack/MainFileManager;
-
-    # getter for: Lcom/shun/hack/MainFileManager;->it:Lcom/shun/hack/Item;
-    invoke-static {v3}, Lcom/shun/hack/MainFileManager;->access$1000(Lcom/shun/hack/MainFileManager;)Lcom/shun/hack/Item;
-
-    move-result-object v3
-
-    invoke-virtual {v3}, Lcom/shun/hack/Item;->getHeader()Ljava/lang/String;
-
-    move-result-object v3
+    const-string v3, "/"
 
     invoke-virtual {v2, v3}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
 
     move-result-object v2
 
-    invoke-virtual {v2}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
+    invoke-virtual {v0}, Lcom/shun/hack/Item;->getHeader()Ljava/lang/String;
 
-    move-result-object v2
+    move-result-object v0
+
+    invoke-virtual {v2, v0}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v0
+
+    invoke-virtual {v0}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
+
+    move-result-object v0
 
     # invokes: Lcom/shun/hack/MainFileManager;->alertAksi(ZLjava/lang/String;)V
-    invoke-static {v0, v1, v2}, Lcom/shun/hack/MainFileManager;->access$900(Lcom/shun/hack/MainFileManager;ZLjava/lang/String;)V
+    invoke-static {v1, v5, v0}, Lcom/shun/hack/MainFileManager;->access$1100(Lcom/shun/hack/MainFileManager;ZLjava/lang/String;)V
 
-    .line 584
-    return-void
+    goto :goto_12
+
+    .line 607
+    :pswitch_3a
+    iget-object v1, p0, Lcom/shun/hack/MainFileManager$8;->this$0:Lcom/shun/hack/MainFileManager;
+
+    const/4 v2, 0x0
+
+    new-instance v3, Ljava/lang/StringBuilder;
+
+    invoke-direct {v3}, Ljava/lang/StringBuilder;-><init>()V
+
+    iget-object v4, p0, Lcom/shun/hack/MainFileManager$8;->this$0:Lcom/shun/hack/MainFileManager;
+
+    # getter for: Lcom/shun/hack/MainFileManager;->currPath:Ljava/lang/String;
+    invoke-static {v4}, Lcom/shun/hack/MainFileManager;->access$500(Lcom/shun/hack/MainFileManager;)Ljava/lang/String;
+
+    move-result-object v4
+
+    invoke-virtual {v3, v4}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v3
+
+    const-string v4, "/"
+
+    invoke-virtual {v3, v4}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v3
+
+    invoke-virtual {v0}, Lcom/shun/hack/Item;->getHeader()Ljava/lang/String;
+
+    move-result-object v0
+
+    invoke-virtual {v3, v0}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v0
+
+    invoke-virtual {v0}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
+
+    move-result-object v0
+
+    # invokes: Lcom/shun/hack/MainFileManager;->alertAksi(ZLjava/lang/String;)V
+    invoke-static {v1, v2, v0}, Lcom/shun/hack/MainFileManager;->access$1100(Lcom/shun/hack/MainFileManager;ZLjava/lang/String;)V
+
+    goto :goto_12
+
+    .line 599
+    :pswitch_data_62
+    .packed-switch 0x1
+        :pswitch_13
+        :pswitch_3a
+        :pswitch_12
+    .end packed-switch
 .end method

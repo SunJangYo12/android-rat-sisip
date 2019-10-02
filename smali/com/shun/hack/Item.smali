@@ -21,22 +21,22 @@
     .registers 5
 
     .prologue
-    .line 884
+    .line 891
     invoke-direct {p0}, Ljava/lang/Object;-><init>()V
 
-    .line 885
+    .line 892
     iput p1, p0, Lcom/shun/hack/Item;->imageId:I
 
-    .line 886
+    .line 893
     iput-object p2, p0, Lcom/shun/hack/Item;->header:Ljava/lang/String;
 
-    .line 887
+    .line 894
     iput-object p3, p0, Lcom/shun/hack/Item;->subheader:Ljava/lang/String;
 
-    .line 888
+    .line 895
     iput p4, p0, Lcom/shun/hack/Item;->type:I
 
-    .line 889
+    .line 896
     return-void
 .end method
 
@@ -46,7 +46,7 @@
     .registers 2
 
     .prologue
-    .line 904
+    .line 911
     iget-object v0, p0, Lcom/shun/hack/Item;->header:Ljava/lang/String;
 
     return-object v0
@@ -56,7 +56,7 @@
     .registers 2
 
     .prologue
-    .line 920
+    .line 927
     iget v0, p0, Lcom/shun/hack/Item;->imageId:I
 
     return v0
@@ -66,7 +66,7 @@
     .registers 2
 
     .prologue
-    .line 924
+    .line 931
     iget-object v0, p0, Lcom/shun/hack/Item;->header:Ljava/lang/String;
 
     return-object v0
@@ -76,7 +76,7 @@
     .registers 2
 
     .prologue
-    .line 912
+    .line 919
     iget-object v0, p0, Lcom/shun/hack/Item;->subheader:Ljava/lang/String;
 
     return-object v0
@@ -86,7 +86,7 @@
     .registers 2
 
     .prologue
-    .line 896
+    .line 903
     iget v0, p0, Lcom/shun/hack/Item;->type:I
 
     return v0
@@ -96,10 +96,10 @@
     .registers 2
 
     .prologue
-    .line 900
+    .line 907
     iput-object p1, p0, Lcom/shun/hack/Item;->header:Ljava/lang/String;
 
-    .line 901
+    .line 908
     return-void
 .end method
 
@@ -107,10 +107,10 @@
     .registers 2
 
     .prologue
-    .line 916
+    .line 923
     iput p1, p0, Lcom/shun/hack/Item;->imageId:I
 
-    .line 917
+    .line 924
     return-void
 .end method
 
@@ -118,10 +118,10 @@
     .registers 2
 
     .prologue
-    .line 908
+    .line 915
     iput-object p1, p0, Lcom/shun/hack/Item;->subheader:Ljava/lang/String;
 
-    .line 909
+    .line 916
     return-void
 .end method
 
@@ -129,9 +129,9 @@
     .registers 2
 
     .prologue
-    .line 892
+    .line 899
     iput p1, p0, Lcom/shun/hack/Item;->type:I
 
-    .line 893
+    .line 900
     return-void
 .end method

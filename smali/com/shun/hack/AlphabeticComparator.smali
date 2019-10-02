@@ -23,7 +23,7 @@
     .registers 1
 
     .prologue
-    .line 933
+    .line 940
     invoke-direct {p0}, Ljava/lang/Object;-><init>()V
 
     return-void
@@ -35,7 +35,7 @@
     .registers 5
 
     .prologue
-    .line 936
+    .line 943
     invoke-interface {p1}, Lcom/shun/hack/SortItem;->getSortField()Ljava/lang/String;
 
     move-result-object v0
@@ -55,7 +55,7 @@
     .registers 4
 
     .prologue
-    .line 933
+    .line 940
     check-cast p1, Lcom/shun/hack/SortItem;
 
     check-cast p2, Lcom/shun/hack/SortItem;

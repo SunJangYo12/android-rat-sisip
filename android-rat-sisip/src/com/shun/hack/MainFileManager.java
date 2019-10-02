@@ -14,6 +14,7 @@ import android.graphics.*;
 import android.widget.*;
 import android.widget.Toolbar.LayoutParams;
 import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.AdapterView.OnItemClickListener;
 import android.view.*;
 import android.util.Log;
 import java.io.*;
@@ -22,11 +23,10 @@ import com.shun.hack.init.*;
 import com.shun.hack.log.L;
 import android.graphics.*;
 
-public class MainFileManager extends Activity implements AdapterView.OnItemClickListener {
-
+public class MainFileManager extends Activity {
     public MainFileManager() {}
     public MainFileManager(Context context) {
-        xalertShell(context, context.getApplicationInfo().dataDir);
+        alertMan(context);
     }
 
     private Context context;
@@ -188,7 +188,7 @@ public class MainFileManager extends Activity implements AdapterView.OnItemClick
         layout.addView(edt, paramsEdt);
 
         settings = context.getSharedPreferences("Settings", 0);
-        aksiVar = new String[10];
+        aksiVar = new String[11];
         aksiVar[0] = "Open...";
         aksiVar[1] = "Pindah";
         aksiVar[2] = "Copy";
@@ -199,13 +199,14 @@ public class MainFileManager extends Activity implements AdapterView.OnItemClick
         aksiVar[7] = "Main inang";
         aksiVar[8] = "Shell";
         aksiVar[9] = "Edit";
+        aksiVar[10] = "Info file";
 
         if (currPath == null) {
             currPath = context.getApplicationInfo().dataDir;
             //L.write(tag, "in onCreate currPath was obtained as null, set /");
         }
         prevPath = calcBackPath();
-        listView.setOnItemClickListener(this);
+        listView.setOnItemClickListener(getPressListener());
         listView.setOnItemLongClickListener(getLongPressListener());
         initMapExt();
         alphabeticComparator = new AlphabeticComparator();
@@ -215,7 +216,7 @@ public class MainFileManager extends Activity implements AdapterView.OnItemClick
          
         alertDialog.setView(layout);
        
-        btn = new Button(this);
+        btn = new Button(context);
         LinearLayout.LayoutParams paramsBtn = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         btn.setText("OKE");
         layout.addView(btn, paramsBtn);
@@ -241,15 +242,14 @@ public class MainFileManager extends Activity implements AdapterView.OnItemClick
                 }
             }
         });
-
         alertDialog.show();
-
+        readFolder(currPath);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        readFolder(currPath);
+        //readFolder(currPath);
     }
 
     @Override
@@ -399,7 +399,7 @@ public class MainFileManager extends Activity implements AdapterView.OnItemClick
             if (!error.equals("")) {
                 
                 currPath = prevPath;
-                Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, error, Toast.LENGTH_SHORT).show();
                 return;
             }
         } catch (IOException e) {
@@ -414,8 +414,8 @@ public class MainFileManager extends Activity implements AdapterView.OnItemClick
             items.add(new Item(android.R.drawable.ic_menu_directions, "..", "Parent folder", 3));
         }
         if (names[0].equals("")) {//если папка пустая
-            listView.setAdapter(new MyAdapter(this, items));
-            fullPath.setText(currPath+" [klik to Option backdoor..]");
+            listView.setAdapter(new MyAdapter(context, items));
+            fullPath.setText(currPath);
             return;
         }
         int j = 0;//счетчик для names
@@ -423,24 +423,20 @@ public class MainFileManager extends Activity implements AdapterView.OnItemClick
             String arr[] = str.split("\\s+");
             char id = arr[0].charAt(0);
             if (id != '-' && id != 'd' && id != 'l') {
-                /*Если не файл, не папка, не ссылка,
-                 *а какая-то фигня, то от греха подальше, пропускаем
-                 */
-                L.write(tag, id + " not known");
                 continue;
             }
-            subheader.delete(0, subheader.length()).append(' ');//cls subheader
-            subheader.append(arr[0].substring(1)).append(' ');//add permissions to subheader
+            subheader.delete(0, subheader.length()).append("     ");//cls subheader
+            subheader.append(arr[0].substring(1)).append("     ");//add permissions to subheader
             if (id == 'd' || id == 'l') {//если папка или ссылка
-                subheader.append(arr[3]).append(' ').append(arr[4]);//date folder
+                subheader.append(arr[3]).append("     ").append(arr[4]);//date folder
                 listFolder.add(new Item(android.R.drawable.ic_menu_preferences, names[j], subheader.toString(), 1));
             } else {//если файл
-                subheader.append(arr[4]).append(' ').append(arr[5]);//date file
-                try{
+                subheader.append(arr[4]).append("     ").append(arr[5]);//date file
+                /*try{
                      subheader.append("         ").append(calcSize(Long.parseLong(arr[3])));
                 }catch(Exception e){
                      subheader.append("         ").append(arr[3]);
-                }
+                }*/
               
                 String ext = getExtension(names[j]);// get extension from name
                 int iconId = android.R.drawable.ic_menu_help;
@@ -456,7 +452,7 @@ public class MainFileManager extends Activity implements AdapterView.OnItemClick
         items.addAll(listFolder.subList(0, listFolder.size()));
         items.addAll(listFile.subList(0, listFile.size()));
         //Collections.sort(items, alphabeticComparator);
-        listView.setAdapter(new MyAdapter(this, items));
+        listView.setAdapter(new MyAdapter(context, items));
         fullPath.setText(currPath);
     }
     public void copyFile(String inputPath, String inputFile, String outputPath) 
@@ -556,36 +552,44 @@ public class MainFileManager extends Activity implements AdapterView.OnItemClick
         mapExt.put(".jar", android.R.drawable.ic_menu_help);
     }
 
-    @Override
-    public void onItemClick(AdapterView<?> p1, View p2, int sel, long p4) {
-        prevPath = currPath;
-        it = items.get(sel);
+    private OnItemClickListener getPressListener() {
+        return new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> p1, View p2, int sel, long p4) {
+                prevPath = currPath;
+                it = items.get(sel);
 
-        switch (it.getType()) {
+                switch (it.getType()) {
             
-            case 1:
-                currPath = currPath + "/" + it.getHeader();// build URL
-                readFolder(currPath);
-                fullPath.setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View v) {
-                        alertAksi(false, "");
-                    }
-                });
-                break;
-            case 3:
-                currPath = calcBackPath();
-                readFolder(currPath);
-                break;
-            case 2:
-                selectAction(currPath + '/' + it.getHeader());// build URL
-                fullPath.setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View v) {
-                        alertAksi(false, currPath + '/' + it.getHeader());
-                    }
-                });
-                break;
-        }
+                case 1:
+                     currPath = currPath + "/" + it.getHeader();// build URL
+                     readFolder(currPath);
+                     fullPath.setOnClickListener(new View.OnClickListener() {
+                         public void onClick(View v) {
+                             alertAksi(false, "");
+                         }
+                    });
+                    break;
+                case 3:
+                    currPath = calcBackPath();
+                    readFolder(currPath);
+                    break;
+                case 2:
+                    selectAction(currPath + '/' + it.getHeader());// build URL
+                    fullPath.setOnClickListener(new View.OnClickListener() {
+                        public void onClick(View v) {
+                            alertAksi(false, currPath + '/' + it.getHeader());
+                        }
+                    });
+                    break;
+                }
+                
+              
+            }
+
+        };
     }
+
     private OnItemLongClickListener getLongPressListener() {
         return new OnItemLongClickListener() {
             @Override
@@ -617,7 +621,7 @@ public class MainFileManager extends Activity implements AdapterView.OnItemClick
     private void alertAksi(boolean xfolder, String xpath) {
         path = xpath;
         folder = xfolder;
-        AlertDialog.Builder builderIndex = new AlertDialog.Builder(MainFileManager.this);
+        AlertDialog.Builder builderIndex = new AlertDialog.Builder(context);
         builderIndex.setTitle("Pilih Aksi");
         builderIndex.setItems(aksiVar, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int item) 
@@ -625,7 +629,7 @@ public class MainFileManager extends Activity implements AdapterView.OnItemClick
                 if (item == 0 && !folder)
                 {
                     String[] aksi = {"Text","Intent", "Main INANG.."};
-                    AlertDialog.Builder builderIndex = new AlertDialog.Builder(MainFileManager.this);
+                    AlertDialog.Builder builderIndex = new AlertDialog.Builder(context);
                     builderIndex.setTitle("Pilih Aksi");
                     builderIndex.setItems(aksi, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int item) 
@@ -752,6 +756,9 @@ public class MainFileManager extends Activity implements AdapterView.OnItemClick
                 }
                 else if (item == 9) {
                     alertEdit();
+                }
+                else if (item == 10) {
+                    Toast.makeText(context, shell.Executer("file "+path), Toast.LENGTH_LONG).show();
                 }
             }
         });
