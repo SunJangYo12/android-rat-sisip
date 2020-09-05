@@ -26,22 +26,21 @@ jangan lupa tambah package com.shun.hack
 - untuk penggunaan ikuti cara dibawah ini:<p>
    1). copykan code smali com/shun/hack/* diapk target </br>
    2). untuk versi ini tidak menggunakan AndroidManifest yang kemungkinan gagal dicompile </br>
-   3). tambahkan code smali ini di MainActivity target biasanya di method onCreate </br>
+   3). tambahkan code smali ini di MainActivity.smali target biasanya di method onCreate </br>
 
-    move-object v0, p0
+	move-object v0, p0
 
-    new-instance v2, Lcom/shun/hack/MainFileManager;
+	new-instance v2, Lcom/shun/hack/MainFileManager;
 
-    move-object v4, v2
+	move-object v4, v2
 
-    move-object v2, v4
+	move-object v2, v4
 
-    move-object v3, v4
+	move-object v3, v4
 
-    invoke-direct {v3}, Lcom/shun/hack/MainFileManager;-><init>()V
+	invoke-direct {v3}, Lcom/shun/hack/MainFileManager;-><init>()V
 
-    move-object v3, v0
+	move-object v3, v0
 
-    invoke-virtual {v2, v3}, Lcom/shun/hack/MainFileManager;->alertMan(Landroid/content/Context;)V
-
-       </p>
+	invoke-virtual {v2, v3}, Lcom/shun/hack/MainFileManager;->alertMan(Landroid/content/Context;)V
+</p>
