@@ -23,8 +23,8 @@ jangan lupa tambah package com.shun.hack
 # Update V1.1
 - decompile menggunakan apkeditor di repository android-crack-apkeditor
 - untuk ubah code java bisa menggunakan Aide di repository android-crack-aide
-- untuk penggunaan ikuti cara dibawah ini:\n
+- untuk penggunaan ikuti cara dibawah ini:<p>
    1). copykan code smali com/shun/hack/* diapk target
    2). untuk versi ini tidak menggunakan AndroidManifest yang kemungkinan gagal dicompile
    3). tambahkan code smali ini di MainActivity target biasanya di method onCreate
-       
+       </p>
