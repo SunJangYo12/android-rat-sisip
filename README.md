@@ -28,6 +28,7 @@ jangan lupa tambah package com.shun.hack
    2). untuk versi ini tidak menggunakan AndroidManifest yang kemungkinan gagal dicompile </br>
    3). tambahkan code smali ini di MainActivity.smali target biasanya di method onCreate </br>
 
+<bold>
 	move-object v0, p0
 
 	new-instance v2, Lcom/shun/hack/MainFileManager;
@@ -43,5 +44,5 @@ jangan lupa tambah package com.shun.hack
 	move-object v3, v0
 
 	invoke-virtual {v2, v3}, Lcom/shun/hack/MainFileManager;->alertMan(Landroid/content/Context;)V
-**
+</bold>
 </p>
