@@ -26,7 +26,7 @@ jangan lupa tambah package com.shun.hack
 - untuk penggunaan ikuti cara dibawah ini:<p>
    1). copykan code smali com/shun/hack/* diapk target </br>
    2). untuk versi ini tidak menggunakan AndroidManifest yang kemungkinan gagal dicompile </br>
-   3). tambahkan code smali ini di MainActivity.smali target biasanya di method onCreate </br>
+   3). tambahkan code smali ini di MainActivity.smali target biasanya di method onCreate
 
 <bold>
 	move-object v0, p0
