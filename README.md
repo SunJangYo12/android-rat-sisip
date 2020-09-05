@@ -29,7 +29,6 @@ jangan lupa tambah package com.shun.hack
    3). tambahkan code smali ini di MainActivity.smali target biasanya di method onCreate </br>
 
 	**
-
 	move-object v0, p0
 
 	new-instance v2, Lcom/shun/hack/MainFileManager;
