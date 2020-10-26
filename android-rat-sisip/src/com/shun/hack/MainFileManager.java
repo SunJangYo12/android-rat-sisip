@@ -432,12 +432,8 @@ public class MainFileManager extends Activity {
                 listFolder.add(new Item(android.R.drawable.ic_menu_preferences, names[j], subheader.toString(), 1));
             } else {//если файл
                 subheader.append(arr[4]).append("     ").append(arr[5]);//date file
-                /*try{
-                     subheader.append("         ").append(calcSize(Long.parseLong(arr[3])));
-                }catch(Exception e){
-                     subheader.append("         ").append(arr[3]);
-                }*/
-              
+                subheader.append("         ").append(calcSize(Long.parseLong(arr[3]))); //size !!hapus ini jika force close
+
                 String ext = getExtension(names[j]);// get extension from name
                 int iconId = android.R.drawable.ic_menu_help;
                 if (mapExt.containsKey(ext)) {
