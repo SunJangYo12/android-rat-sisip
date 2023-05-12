@@ -46,3 +46,7 @@ jangan lupa tambah package com.shun.hack
 	invoke-virtual {v2, v3}, Lcom/shun/hack/MainFileManager;->alertMan(Landroid/content/Context;)V
 </bold>
 
+# Add build from aide android
+add grep text
+ usage: navigate filemanager to path for you can find
+ text from many file
