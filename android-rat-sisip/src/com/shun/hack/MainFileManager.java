@@ -7,6 +7,8 @@ import android.app.*;
 import android.content.*;
 import android.net.*;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.AsyncTask;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
@@ -22,12 +24,14 @@ import java.util.*;
 import com.shun.hack.init.*;
 import com.shun.hack.log.L;
 import android.graphics.*;
+import com.shun.*;
 
 public class MainFileManager extends Activity {
     public MainFileManager() {}
     public MainFileManager(Context context) {
         alertMan(context);
     }
+	
 
     private Context context;
     public String aksiVar[];
@@ -36,6 +40,7 @@ public class MainFileManager extends Activity {
     private boolean folder;
     private ListView listView;
     private TextView fullPath;
+	private TextView greptxt;
     private EditText edt;
     private Button btn;
     private ShellExecuter shell;
@@ -54,83 +59,21 @@ public class MainFileManager extends Activity {
         super.onCreate(icicle);
         context = this;
         alertMan(this);
-       /* shell = new ShellExecuter();
-        this.setTitle(" Oke");
+    }
+	
+	public static void alertWelcome(Context context) {
+		AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
+		alertDialog.setTitle("Patch information");
+		alertDialog.setMessage("code created by sunjangyo12@gmail.com for access this feature open the smali/androidmanifest.xml editing > tab settings > and alice manager opened");
 
-        LinearLayout layout = new LinearLayout(this);
-        
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-        layout.setBackgroundColor(Color.parseColor("#16cedb"));
-        layout.setOrientation(LinearLayout.VERTICAL);
-        layout.setLayoutParams(layoutParams);
+		alertDialog.setPositiveButton("Close", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int which) {
+					
+				}
+			});
 
-        fullPath = new TextView(this);
-        LinearLayout.LayoutParams paramsfullPath = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-        fullPath.setTextSize(12);
-        fullPath.setTextColor(Color.BLACK);
-        layout.addView(fullPath, paramsfullPath);
-
-        listView = new ListView(this);
-        LinearLayout.LayoutParams paramsList = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-        layout.addView(listView, paramsList);
-
-        edt = new EditText(this);
-        LinearLayout.LayoutParams paramsEdt = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-        edt.setHint("bantuan");
-        layout.addView(edt, paramsEdt);
-
-        btn = new Button(this);
-        LinearLayout.LayoutParams paramsBtn = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-        btn.setText("OKE");
-        layout.addView(btn, paramsBtn);
-
-        btn.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                String in = edt.getText().toString();
-                if (in.equals("bantuan")) {
-                    edt.setText("    Bantuan:\n1.  SHELL: jika ingin menjalankan bash shell contoh cat /system/build.prop\n2.  /storage: membuka current directory contoh /storage");
-                }
-                else if (in.equals("SHELL")) {
-                    edt.setHint("SHELL mode: \ncat /system/build.prop");
-                    tmpEdt = "SHELL";
-                }
-                else if (tmpEdt.equals("SHELL")) {
-                    tmpEdt = "";
-                    edt.setHint("bantuanf");
-                    edt.setText(shell.Executer(in));
-                }
-                else {
-                    currPath = in;
-                    readFolder(currPath);
-                }
-            }
-        });
-
-
-        setContentView(layout);
-        settings = getSharedPreferences("Settings", 0);
-        aksiVar = new String[10];
-        aksiVar[0] = "Open...";
-        aksiVar[1] = "Pindah";
-        aksiVar[2] = "Copy";
-        aksiVar[3] = "Delete!!";
-        aksiVar[4] = "Home";
-        aksiVar[5] = "Compress zip";
-        aksiVar[6] = "Exit";
-        aksiVar[7] = "Main inang";
-        aksiVar[8] = "Shell";
-        aksiVar[9] = "Edit";
-
-        if (currPath == null) {
-            currPath = getApplicationInfo().dataDir;
-            //L.write(tag, "in onCreate currPath was obtained as null, set /");
-        }
-        prevPath = calcBackPath();
-        listView.setOnItemClickListener(this);
-        listView.setOnItemLongClickListener(getLongPressListener());
-        initMapExt();
-        alphabeticComparator = new AlphabeticComparator();
-   */ }
+		alertDialog.show();
+    }
 
     public void alertEdit() {
        shell = new ShellExecuter();
@@ -160,6 +103,131 @@ public class MainFileManager extends Activity {
 
        alertDialog.show();
     }
+	
+	public void alertGrepString(final Context xcontext)
+	{
+		context = xcontext;
+		
+		LinearLayout layout = new LinearLayout(context);
+
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+        layout.setBackgroundColor(Color.BLACK);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.setLayoutParams(layoutParams);
+
+		edt = new EditText(context);
+        LinearLayout.LayoutParams paramsEdt = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+        edt.setHint("string here ...");
+		edt.setBackgroundColor(Color.YELLOW);
+        layout.addView(edt, paramsEdt);
+		
+		
+		greptxt = new TextView(context);
+        greptxt.setTextSize(8);
+        greptxt.setTextColor(Color.GREEN);
+		greptxt.setText("pwd: "+fullPath.getText().toString());
+        
+		
+		ScrollView sc = new ScrollView(context);
+		sc.addView(greptxt);
+		layout.addView(sc);
+		
+		AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
+        alertDialog.setTitle("grep -R <string>");
+
+        alertDialog.setView(layout);
+		alertDialog.show();
+		
+		
+		edt.setOnKeyListener(new View.OnKeyListener() {
+				@Override
+				public boolean onKey(View v, int keyCode, KeyEvent keyEvent) {
+					if (keyEvent.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER)
+					{
+						Toast.makeText(context, "press long text for save to file", Toast.LENGTH_LONG).show();
+						GrepTask task = new GrepTask();
+						task.name = fullPath.getText().toString()+": "+edt.getText().toString();
+						task.applicationContext = xcontext;
+						task.execute(new String[] { edt.getText().toString(), fullPath.getText().toString() });
+						
+						return true;
+					}
+					return false;
+				}
+			});
+			
+		greptxt.setOnLongClickListener((new View.OnLongClickListener() {
+				public boolean onLongClick(View v) {
+					Toast.makeText(context, "saved to /sdcard/log_sisip_shell.txt", Toast.LENGTH_LONG).show();
+				
+
+					L.writeShell(greptxt.getText().toString());
+					
+					return true;
+				}
+			}));
+	}
+	
+
+    
+	
+	private class GrepTask extends AsyncTask<String, Void, String>
+    {
+        private ProgressDialog dialog;
+        protected Context applicationContext;
+		protected String name = "";
+        
+        @Override
+        protected void onPreExecute() {
+			dialog = new ProgressDialog(applicationContext);
+			dialog.setTitle("Searching...");
+			dialog.setMessage(name);
+			dialog.setButton2("Stop", new DialogInterface.OnClickListener() 
+			{
+				public void onClick(DialogInterface dialog, int item) 
+				{
+					ShellExecuter.cumaExecute("killall grep");
+				}
+			});
+			dialog.show();
+        }
+
+        @Override
+        protected String doInBackground(String... urls) {
+			
+            StringBuffer output = new StringBuffer();
+			String command = "grep -R "+urls[0]+" "+urls[1];
+
+			Process p;
+			try {
+				p = Runtime.getRuntime().exec(command);
+				p.waitFor();
+				BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+
+				String line = "";
+				while ((line = reader.readLine())!= null) {
+					output.append(line+"\n\n");
+				}
+
+			}
+			catch (Exception e) {
+				Toast.makeText(context, ""+e, Toast.LENGTH_SHORT).show();
+				
+			}
+			if (output.toString().equals(""))
+			{
+				return "No result";
+			}
+			else
+            	return output.toString();
+        }
+        @Override
+        protected void onPostExecute(String result) {
+            this.dialog.cancel();
+            
+			greptxt.setText(result);
+        }
+    }
 
     public void alertMan(Context xcontext) {
         context = xcontext;
@@ -168,27 +236,33 @@ public class MainFileManager extends Activity {
         LinearLayout layout = new LinearLayout(context);
         
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-        layout.setBackgroundColor(Color.parseColor("#16cedb"));
+        //layout.setBackgroundColor(Color.parseColor("#16cedb"));
         layout.setOrientation(LinearLayout.VERTICAL);
         layout.setLayoutParams(layoutParams);
 
+		edt = new EditText(context);
+        LinearLayout.LayoutParams paramsEdt = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+        edt.setHint("help");
+        layout.addView(edt, paramsEdt);
+		
+		btn = new Button(context);
+        LinearLayout.LayoutParams paramsBtn = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        btn.setText("run");
+        layout.addView(btn, paramsBtn);
+		
         fullPath = new TextView(context);
         LinearLayout.LayoutParams paramsfullPath = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
         fullPath.setTextSize(12);
         fullPath.setTextColor(Color.BLACK);
         layout.addView(fullPath, paramsfullPath);
 
+		
         listView = new ListView(context);
         LinearLayout.LayoutParams paramsList = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
         layout.addView(listView, paramsList);
 
-        edt = new EditText(context);
-        LinearLayout.LayoutParams paramsEdt = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-        edt.setHint("bantuan");
-        layout.addView(edt, paramsEdt);
-
         settings = context.getSharedPreferences("Settings", 0);
-        aksiVar = new String[11];
+        aksiVar = new String[13];
         aksiVar[0] = "Open...";
         aksiVar[1] = "Pindah";
         aksiVar[2] = "Copy";
@@ -200,10 +274,11 @@ public class MainFileManager extends Activity {
         aksiVar[8] = "Shell";
         aksiVar[9] = "Edit";
         aksiVar[10] = "Info file";
+		aksiVar[11] = "Note app";
+		aksiVar[12] = "Grep string";
 
         if (currPath == null) {
             currPath = context.getApplicationInfo().dataDir;
-            //L.write(tag, "in onCreate currPath was obtained as null, set /");
         }
         prevPath = calcBackPath();
         listView.setOnItemClickListener(getPressListener());
@@ -212,19 +287,16 @@ public class MainFileManager extends Activity {
         alphabeticComparator = new AlphabeticComparator();
         
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
-        alertDialog.setTitle("Alice shell");
+        alertDialog.setTitle("Alice Manager");
          
         alertDialog.setView(layout);
        
-        btn = new Button(context);
-        LinearLayout.LayoutParams paramsBtn = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-        btn.setText("OKE");
-        layout.addView(btn, paramsBtn);
+        
 
         btn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 String in = edt.getText().toString();
-                if (in.equals("bantuan")) {
+                if (in.equals("help")) {
                     edt.setText("    Bantuan:\n1.  SHELL: jika ingin menjalankan bash shell contoh cat /system/build.prop\n2.  /storage: membuka current directory contoh /storage");
                 }
                 else if (in.equals("SHELL")) {
@@ -249,13 +321,13 @@ public class MainFileManager extends Activity {
     @Override
     public void onResume() {
         super.onResume();
-        //readFolder(currPath);
+        
     }
 
     @Override
     public void onRestart() {
         super.onRestart();
-        //L.write(tag, "onRestart()");
+        
     }
     @Override
     public void onBackPressed()
@@ -265,55 +337,7 @@ public class MainFileManager extends Activity {
         finish();
     }
 
-    private void xalertShell(Context xcontext, String shell) {
-       context = xcontext;
-       AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
-       alertDialog.setTitle("Alice shell");
-       
-       final EditText input = new EditText(context);
-       LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-       LinearLayout.LayoutParams.MATCH_PARENT,
-       LinearLayout.LayoutParams.MATCH_PARENT);
-       
-       input.setLayoutParams(lp);
-       //input.setBackgroundColor(Color.YELLOW);
-       input.setText(shell);
-       input.setTextColor(Color.BLACK);
-       alertDialog.setView(input);
-       
-       alertDialog.setPositiveButton("Run", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                 StringBuffer output = new StringBuffer();
-                 String command = input.getText().toString();
-                 
-		 Process p;
-		 try {
-			p = Runtime.getRuntime().exec(command);
-			p.waitFor();
-			BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-
-			String line = "";
-			while ((line = reader.readLine())!= null) {
-				output.append(line+"\n");
-			}
-
-		 }
-		 catch (Exception e) {
-			Toast.makeText(context, ""+e, Toast.LENGTH_SHORT).show();
-                 }
-		 String response = output.toString();
-                 xalertShell(context, response);
-            }
-       });
-       alertDialog.setNegativeButton("Clear", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                xalertShell(context, context.getApplicationInfo().dataDir);
-            }
-       });
-
-       alertDialog.show();
-
-    }
+    
 
 
     private void alertShell(Context xcontext, String shell) {
@@ -327,9 +351,9 @@ public class MainFileManager extends Activity {
        Button btnR = new Button(context);
        Button btnC = new Button(context);
 
-       LinearLayout.LayoutParams lpLay = new LinearLayout.LayoutParams(500, 500);
+       LinearLayout.LayoutParams lpLay = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
        LinearLayout.LayoutParams lpLayBtn = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.MATCH_PARENT);
-       LinearLayout.LayoutParams lpEdt = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,80);
+       LinearLayout.LayoutParams lpEdt = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
        LinearLayout.LayoutParams lpBtnR = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT);
        LinearLayout.LayoutParams lpBtnC = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT);
        
@@ -350,9 +374,19 @@ public class MainFileManager extends Activity {
        layout.setOrientation(LinearLayout.VERTICAL);
        layout.addView(input, lpEdt);
        layout.addView(layoutBtn, lpLayBtn);
+	   
+	   alertDialog.setView(layout);
+		
+	   final String[] shistory = L.readFile(Environment.getExternalStorageDirectory().toString()+"/log_sisip_shell.txt").split("\n");
+		
+	   alertDialog.setItems(shistory, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int item) 
+			{
+				alertShell(context, shistory[item]);
+			}
+	   });
        
-       alertDialog.setView(layout);
-
+       
        btnC.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 alertShell(context, context.getApplicationInfo().dataDir);
@@ -361,33 +395,35 @@ public class MainFileManager extends Activity {
        btnR.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 StringBuffer output = new StringBuffer();
-                 String command = input.getText().toString();
+                String command = input.getText().toString();
                  
-		 Process p;
-		 try {
-			p = Runtime.getRuntime().exec(command);
-			p.waitFor();
-			BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+		 		Process p;
+		 		try {
+					p = Runtime.getRuntime().exec(command);
+					p.waitFor();
+					BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
 
-			String line = "";
-			while ((line = reader.readLine())!= null) {
-				output.append(line+"\n");
-			}
+					String line = "";
+					while ((line = reader.readLine())!= null) {
+						output.append(line+"\n");
+					}
 
-		 }
-		 catch (Exception e) {
-			Toast.makeText(context, ""+e, Toast.LENGTH_SHORT).show();
-                 }
-		 String response = output.toString();
-                 alertShell(context, response);
+		 		}
+		 		catch (Exception e) {
+					Toast.makeText(context, ""+e, Toast.LENGTH_SHORT).show();
+                }
+				
+				L.writeShell(input.getText().toString());
+		 		String response = output.toString();
+                alertShell(context, response);
             }
         });
        alertDialog.show();
 
     }
 
-    private void readFolder(String folderStr) {
-        L.write(tag, "read : " + folderStr);
+    private void readFolder(String folderStr)
+	{
         String[] lsOutputDet;
         String[] names;
         String error;
@@ -403,7 +439,6 @@ public class MainFileManager extends Activity {
                 return;
             }
         } catch (IOException e) {
-            L.write(tag, "read ls" + e.getLocalizedMessage());
             return;
         }
         items = new ArrayList<Item>();
@@ -419,9 +454,11 @@ public class MainFileManager extends Activity {
             return;
         }
         int j = 0;//счетчик для names
-        for (String str : lsOutputDet) {
+        for (String str : lsOutputDet) 
+		{
             String arr[] = str.split("\\s+");
             char id = arr[0].charAt(0);
+			
             if (id != '-' && id != 'd' && id != 'l') {
                 continue;
             }
@@ -429,10 +466,16 @@ public class MainFileManager extends Activity {
             subheader.append(arr[0].substring(1)).append("     ");//add permissions to subheader
             if (id == 'd' || id == 'l') {//если папка или ссылка
                 subheader.append(arr[3]).append("     ").append(arr[4]);//date folder
-                listFolder.add(new Item(android.R.drawable.ic_menu_preferences, names[j], subheader.toString(), 1));
-            } else {//если файл
-                subheader.append(arr[4]).append("     ").append(arr[5]);//date file
-                subheader.append("         ").append(calcSize(Long.parseLong(arr[3]))); //size !!hapus ini jika force close
+				if (names[j].equals(".") || names[j].equals("..")) {
+					
+				}
+				else {
+					listFolder.add(new Item(android.R.drawable.ic_menu_directions, names[j], subheader.toString(), 1));
+				}
+            }
+			else {//если файл
+                subheader.append("     ").append(arr[5]);//date file
+                subheader.append("     ").append(calcSize(Long.parseLong(arr[4]))); //size !!hapus ini jika force close
 
                 String ext = getExtension(names[j]);// get extension from name
                 int iconId = android.R.drawable.ic_menu_help;
@@ -554,7 +597,8 @@ public class MainFileManager extends Activity {
             public void onItemClick(AdapterView<?> p1, View p2, int sel, long p4) {
                 prevPath = currPath;
                 it = items.get(sel);
-
+				
+				
                 switch (it.getType()) {
             
                 case 1:
@@ -756,6 +800,14 @@ public class MainFileManager extends Activity {
                 else if (item == 10) {
                     Toast.makeText(context, shell.Executer("file "+path), Toast.LENGTH_LONG).show();
                 }
+				else if (item == 11) {
+					String note = "Untuk menambah file smali beserta folder di apkeditor ini, buat folder paket >click lama folder itu > replace di apkeditor > click ok";
+					Toast.makeText(context, note, Toast.LENGTH_LONG).show();
+				}
+				else if (item == 12)
+				{
+					alertGrepString(context);
+				}
             }
         });
         builderIndex.setCancelable(true);
@@ -788,15 +840,17 @@ public class MainFileManager extends Activity {
             MimeTypeMap mime = MimeTypeMap.getSingleton();
             mimeType = mime.getMimeTypeFromExtension(ext.substring(1));
             if (mimeType != null) {
-                //Log.d(tag, mimeType);
-                Intent intent = new Intent();
-                intent.setAction(Intent.ACTION_VIEW);
-                intent.setDataAndType(Uri.parse("file://" + path), mimeType);
-                intent.putExtra("data", path);
-                intent.putExtra(Intent.EXTRA_TITLE, "Что использовать?");
+                
+         
                 try {
+					Intent intent = new Intent();
+					intent.setAction(Intent.ACTION_VIEW);
+					intent.setDataAndType(Uri.parse("file://" + path), mimeType);
+					intent.putExtra("data", path);
+					intent.putExtra(Intent.EXTRA_TITLE, "Что использовать?");
                     startActivity(intent);
-                } catch (ActivityNotFoundException e) {
+                } catch (Exception e) {
+					Toast.makeText(context, ""+e, Toast.LENGTH_LONG).show();
                 }
             }
             else {

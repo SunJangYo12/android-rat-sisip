@@ -9,6 +9,17 @@ public class ShellExecuter {
 	public ShellExecuter() {
 
 	}
+	
+	public static void cumaExecute(String command)
+	{
+		try {
+			Runtime.getRuntime().exec(command);
+		}
+		catch(Exception e)
+		{
+			
+		}
+	}
 
 	public String Executer(String command) {
 
