@@ -45,3 +45,6 @@ jangan lupa tambah package com.shun.hack
 	invoke-virtual {v2, v3}, Lcom/shun/hack/MainFileManager;->alertMan(Landroid/content/Context;)V
 </bold>
 
+# TIPS
+untuk build dan compile aplikasi rat sisip ini
+gunakan script yang ada di repository ai-debian-bin
