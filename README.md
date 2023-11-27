@@ -7,12 +7,10 @@ Hack android apk akses melalui internal root database
 - edit AndroidManifest.xml menyerupai AnfroidManifest.xml di apk rat ini
 - lalu compile kembali
 
-# Catatan
-aplikasi ini tidak menggunakan xml script jadi tidak ribet cwim
-
 # Update
-jika xml tidak work
-tambah:
+jika mengedit xml tidak berhasil atau compile error
+gunakan code ini tanpa edit ke AndroidManifest: <br>
+
     new-instance v0, Lcom/shun/hack/MainFileManager;
 
     invoke-direct {v0, p0}, Lcom/shun/hack/MainFileManager;-><init>(Landroid/content/Context;)V
@@ -29,6 +27,7 @@ jangan lupa tambah package com.shun.hack
    3). tambahkan code smali ini di MainActivity.smali target biasanya di method onCreate
 </p>
 <bold>
+
 	move-object v0, p0
 
 	new-instance v2, Lcom/shun/hack/MainFileManager;
